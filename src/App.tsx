@@ -1,9 +1,10 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { AuthProvider } from './contexts/AuthContext';
 import { ProtectedRoute } from './components/auth/ProtectedRoute';
 import { Layout } from './components/layout/Layout';
 import { AuthPage } from './pages/AuthPage';
+import { HomePage } from './pages/HomePage';
 import './index.css';
 
 const queryClient = new QueryClient();
@@ -22,7 +23,8 @@ function App() {
                   <ProtectedRoute>
                     <Layout>
                       <Routes>
-                        {/* <Route path="*" element={<Navigate to="/pacientes" replace />} /> */}
+                        <Route path="/home" element={<HomePage />} />
+                        <Route path="*" element={<Navigate to="/home" replace />} />
                       </Routes>
                     </Layout>
                   </ProtectedRoute>

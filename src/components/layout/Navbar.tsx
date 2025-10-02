@@ -34,11 +34,11 @@ export const Navbar: React.FC<NavbarProps> = ({ onMenuClick }) => {
               <User className="h-4 w-4 sm:h-5 sm:w-5 text-gray-400" />
               <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-2">
                 <span className="text-xs sm:text-sm text-gray-700 truncate max-w-32 sm:max-w-none">
-                  {user?.nombre} {user?.apellido}
+                  {user?.nombres} {user?.apellidos}
                 </span>
-                {user?.farmacia && (
+                {user?.nombreRol && (
                   <span className="text-xs text-gray-500 hidden sm:inline">
-                    - {user.farmacia}
+                    - {user.nombreRol}
                   </span>
                 )}
               </div>

@@ -1,14 +1,14 @@
 export interface User {
-  id: number;
-  nombre: string;
-  apellido: string;
+  idUsuario: number;
+  nombres: string;
+  apellidos: string;
   email: string;
-  telefono?: string;
-  farmacia?: string;
-  licencia?: string;
-  activo: boolean;
-  created_at: string;
-  updated_at: string;
+  tipoDocumento: string;
+  numeroDocumento: string;
+  telefono: string;
+  idRol: number;
+  nombreRol: string;
+  estado: string;
 }
 
 export interface LoginRequest {
@@ -27,9 +27,10 @@ export interface RegisterRequest {
   telefono?: string;
 }
 
-export interface AuthResponse {
-  farmaceutico: User;
-  access_token: string;
+export interface AuthResponse extends User {
+  token: string;
+  expiresIn: number;
+  message: string;
 }
 
 export interface RegisterResponse {

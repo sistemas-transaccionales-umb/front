@@ -8,8 +8,9 @@ export const AuthPage: React.FC = () => {
   const { isAuthenticated } = useAuth();
   const [isLogin, setIsLogin] = useState(true);
 
+  // Si el usuario ya está autenticado, redirigir al home
   if (isAuthenticated) {
-    return <Navigate to="/" replace />;
+    return <Navigate to="/home" replace />;
   }
 
   return (

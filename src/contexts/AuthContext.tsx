@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect, type ReactNode } from 'react';
+import React, { createContext, useContext, useState, useEffect, useMemo, type ReactNode } from 'react';
 import type { AuthContextType, User, LoginRequest, RegisterRequest, RegisterResponse } from '../types/auth';
 import { authService } from '../services/auth.service';
 
@@ -27,17 +27,29 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   }, []);
 
   const login = async (credentials: LoginRequest): Promise<void> => {
-    console.log(credentials);
     try {
       setIsLoading(true);
       const response = await authService.login(credentials);
-      console.log(response);
       
-      /*
-      setUser(response.farmaceutico);
-      setToken(response.access_token);
-      authService.storeAuth(response.access_token, response.farmaceutico);
-      */
+      if(response.token){
+        // Extraer solo los datos del usuario sin campos de autenticación
+        const userData: User = {
+          idUsuario: response.idUsuario,
+          nombres: response.nombres,
+          apellidos: response.apellidos,
+          email: response.email,
+          tipoDocumento: response.tipoDocumento,
+          numeroDocumento: response.numeroDocumento,
+          telefono: response.telefono,
+          idRol: response.idRol,
+          nombreRol: response.nombreRol,
+          estado: response.estado,
+        };
+        
+        setUser(userData);
+        setToken(response.token);
+        authService.storeAuth(response.token, userData);
+      }
     } catch (error) {
       console.log(error);
       throw error;
@@ -47,13 +59,11 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   };
 
   const register = async (data: RegisterRequest): Promise<RegisterResponse> => {
+    setIsLoading(true);
     try {
-      setIsLoading(true);
       const response = await authService.register(data);
       console.log(response);
       return response;
-    } catch (error) {
-      throw error;
     } finally {
       setIsLoading(false);
     }
@@ -67,7 +77,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   const isAuthenticated = !!token && !!user;
 
-  const value: AuthContextType = {
+  const value: AuthContextType = useMemo(() => ({
     user,
     token,
     login,
@@ -75,7 +85,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     logout,
     isLoading,
     isAuthenticated,
-  };
+  }), [user, token, isLoading, isAuthenticated]);
 
   return (
     <AuthContext.Provider value={value}>
