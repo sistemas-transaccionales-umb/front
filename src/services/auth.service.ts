@@ -1,6 +1,16 @@
 import api from './api';
 import type { LoginRequest, RegisterRequest, AuthResponse, RegisterResponse, User } from '../types/auth';
 
+export interface ChangePasswordRequest {
+  email: string;
+  oldPassword: string;
+  newPassword: string;
+}
+
+export interface ChangePasswordResponse {
+  message: string;
+}
+
 export const authService = {
   async login(credentials: LoginRequest): Promise<AuthResponse> {
     const response = await api.post<AuthResponse>('/auth/login', credentials);
@@ -9,6 +19,21 @@ export const authService = {
 
   async register(data: RegisterRequest): Promise<RegisterResponse> {
     const response = await api.post<RegisterResponse>('/auth/register', data);
+    return response.data;
+  },
+
+  async checkEmail(email: string): Promise<boolean> {
+    const response = await api.get<boolean>(`/auth/check-email?email=${encodeURIComponent(email)}`);
+    return response.data;
+  },
+
+  async getUserByEmail(email: string): Promise<User> {
+    const response = await api.get<User>(`/auth/user?email=${encodeURIComponent(email)}`);
+    return response.data;
+  },
+
+  async changePassword(data: ChangePasswordRequest): Promise<ChangePasswordResponse> {
+    const response = await api.post<ChangePasswordResponse>('/auth/change-password', data);
     return response.data;
   },
 
