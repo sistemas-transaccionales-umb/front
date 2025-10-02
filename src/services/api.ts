@@ -23,6 +23,7 @@ api.interceptors.request.use(
   }
 );
 
+/*
 // Interceptor para manejar errores de respuesta
 api.interceptors.response.use(
   (response) => response,
@@ -36,5 +37,6 @@ api.interceptors.response.use(
     return Promise.reject(error);
   }
 );
+*/
 
 export default api; 

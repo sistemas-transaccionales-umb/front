@@ -27,24 +27,20 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   }, []);
 
   const login = async (credentials: LoginRequest): Promise<void> => {
-
     console.log(credentials);
     try {
       setIsLoading(true);
       const response = await authService.login(credentials);
       console.log(response);
-      /*
-      return;
-      /*
+      
       setUser(response.farmaceutico);
       setToken(response.access_token);
       authService.storeAuth(response.access_token, response.farmaceutico);
-      */
     } catch (error) {
       console.log(error);
-      //throw error;
+      throw error;
     } finally {
-      //setIsLoading(false);
+      setIsLoading(false);
     }
   };
 
@@ -52,10 +48,12 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     try {
       setIsLoading(true);
       const response = await authService.register(data);
-      
+      console.log(response);
+      /*
       setUser(response.farmaceutico);
       setToken(response.access_token);
       authService.storeAuth(response.access_token, response.farmaceutico);
+      */
     } catch (error) {
       throw error;
     } finally {

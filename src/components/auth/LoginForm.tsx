@@ -29,13 +29,15 @@ export const LoginForm: React.FC<LoginFormProps> = ({ onSwitchToRegister }) => {
     resolver: yupResolver(schema),
   });
 
-  const onSubmit = async (data: LoginRequest) => {
+  const onSubmit = async (data: LoginRequest, e?: React.BaseSyntheticEvent) => {
+    e?.preventDefault();
     try {
       setIsSubmitting(true);
       setError(null);
       await login(data);
-    } catch (err: any) {
-      setError(err.response?.data?.message || 'Error al iniciar sesión');
+    } catch (err: unknown) {
+      const error = err as { response?: { data?: { message?: string } } };
+      setError(error.response?.data?.message || 'Error al iniciar sesión');
     } finally {
       setIsSubmitting(false);
     }
