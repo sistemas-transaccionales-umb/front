@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect, type ReactNode } from 'react';
-import type { AuthContextType, User, LoginRequest, RegisterRequest } from '../types/auth';
+import type { AuthContextType, User, LoginRequest, RegisterRequest, RegisterResponse } from '../types/auth';
 import { authService } from '../services/auth.service';
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -33,9 +33,11 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       const response = await authService.login(credentials);
       console.log(response);
       
+      /*
       setUser(response.farmaceutico);
       setToken(response.access_token);
       authService.storeAuth(response.access_token, response.farmaceutico);
+      */
     } catch (error) {
       console.log(error);
       throw error;
@@ -44,16 +46,12 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }
   };
 
-  const register = async (data: RegisterRequest): Promise<void> => {
+  const register = async (data: RegisterRequest): Promise<RegisterResponse> => {
     try {
       setIsLoading(true);
       const response = await authService.register(data);
       console.log(response);
-      /*
-      setUser(response.farmaceutico);
-      setToken(response.access_token);
-      authService.storeAuth(response.access_token, response.farmaceutico);
-      */
+      return response;
     } catch (error) {
       throw error;
     } finally {

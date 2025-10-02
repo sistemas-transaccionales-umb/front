@@ -1,5 +1,5 @@
 import api from './api';
-import type { LoginRequest, RegisterRequest, AuthResponse, User } from '../types/auth';
+import type { LoginRequest, RegisterRequest, AuthResponse, RegisterResponse, User } from '../types/auth';
 
 export const authService = {
   async login(credentials: LoginRequest): Promise<AuthResponse> {
@@ -7,8 +7,8 @@ export const authService = {
     return response.data;
   },
 
-  async register(data: RegisterRequest): Promise<AuthResponse> {
-    const response = await api.post<AuthResponse>('/auth/register', data);
+  async register(data: RegisterRequest): Promise<RegisterResponse> {
+    const response = await api.post<RegisterResponse>('/auth/register', data);
     return response.data;
   },
 
@@ -28,7 +28,7 @@ export const authService = {
 
   getStoredUser(): User | null {
     const userStr = localStorage.getItem('auth_user');
-    return userStr ? JSON.parse(userStr) : null;
+    return userStr !== null ? JSON.parse(userStr) : null;
   },
 
   storeAuth(token: string, user: User): void {

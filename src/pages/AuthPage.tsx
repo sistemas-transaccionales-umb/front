@@ -20,7 +20,7 @@ export const AuthPage: React.FC = () => {
             Sistema Para Pymes
           </h1>
           <p className="text-gray-600">
-            Plataforma para la gestion de inventario y facturación
+            Sistema de informacion para la gestion de inventario y facturación
           </p>
         </div>
 

@@ -32,11 +32,25 @@ export interface AuthResponse {
   access_token: string;
 }
 
+export interface RegisterResponse {
+  idUsuario: number;
+  nombres: string;
+  apellidos: string;
+  email: string;
+  tipoDocumento: string;
+  numeroDocumento: string;
+  telefono: string;
+  idRol: number;
+  nombreRol: string;
+  estado: string;
+  message: string;
+}
+
 export interface AuthContextType {
   user: User | null;
   token: string | null;
   login: (credentials: LoginRequest) => Promise<void>;
-  register: (data: RegisterRequest) => Promise<void>;
+  register: (data: RegisterRequest) => Promise<RegisterResponse>;
   logout: () => void;
   isLoading: boolean;
   isAuthenticated: boolean;

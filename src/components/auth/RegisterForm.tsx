@@ -5,6 +5,7 @@ import * as yup from 'yup';
 import { useAuth } from '../../contexts/AuthContext';
 import type { RegisterRequest } from '../../types/auth';
 import { Eye, EyeOff, Mail, Lock, User, Phone, FileText, CreditCard, UserCircle } from 'lucide-react';
+import { toast } from 'react-toastify';
 
 const schema = yup.object().shape({
   idRol: yup.number().required('El rol es obligatorio'),
@@ -50,13 +51,24 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({ onSwitchToLogin }) =
     resolver: yupResolver(schema),
   });
 
-  const onSubmit = async (data: RegisterRequest) => {
+  const onSubmit = async (data: RegisterRequest, e?: React.BaseSyntheticEvent) => {
+    e?.preventDefault();
     try {
       setIsSubmitting(true);
       setError(null);
-      await registerUser(data);
-    } catch (err: any) {
-      setError(err.response?.data?.message || 'Error al registrarse');
+      const response = await registerUser(data);
+      
+      // Mostrar notificación de éxito
+      toast.success(response.message || 'Usuario registrado exitosamente');
+      
+      // Esperar un momento para que el usuario vea la notificación
+      setTimeout(() => {
+        onSwitchToLogin();
+      }, 1000);
+    } catch (err: unknown) {
+      const error = err as { response?: { data?: { message?: string } } };
+      setError(error.response?.data?.message || 'Error al registrarse');
+      toast.error(error.response?.data?.message || 'Error al registrarse');
     } finally {
       setIsSubmitting(false);
     }
