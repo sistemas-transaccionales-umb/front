@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { PlusIcon, PencilIcon, TrashIcon, MagnifyingGlassIcon } from '@heroicons/react/24/outline';
+import { toast } from 'react-toastify';
 import { productosService, categoriasService } from '../services';
 import type { Producto, CreateProductoRequest } from '../services/productos.service';
 import type { Categoria } from '../services/categorias.service';
@@ -33,7 +34,7 @@ export default function ProductosPage() {
       setProductos(data);
     } catch (error) {
       console.error('Error cargando productos:', error);
-      alert('Error al cargar productos');
+      toast.error('Error al cargar productos');
     } finally {
       setLoading(false);
     }
@@ -45,6 +46,7 @@ export default function ProductosPage() {
       setCategorias(data);
     } catch (error) {
       console.error('Error cargando categorías:', error);
+      toast.error('Error al cargar categorías');
     }
   };
 
@@ -54,16 +56,17 @@ export default function ProductosPage() {
       setLoading(true);
       if (editingProducto) {
         await productosService.actualizar(editingProducto.idProducto, formData);
-        alert('Producto actualizado exitosamente');
+        toast.success('Producto actualizado exitosamente');
       } else {
         await productosService.crear(formData);
-        alert('Producto creado exitosamente');
+        toast.success('Producto creado exitosamente');
       }
       setShowModal(false);
       resetForm();
       loadProductos();
-    } catch (error: any) {
-      alert(error.response?.data?.message || 'Error al guardar producto');
+    } catch (error: unknown) {
+      const err = error as { response?: { data?: { message?: string } } };
+      toast.error(err.response?.data?.message || 'Error al guardar producto');
     } finally {
       setLoading(false);
     }
@@ -101,10 +104,10 @@ export default function ProductosPage() {
     if (!window.confirm('¿Está seguro de eliminar este producto?')) return;
     try {
       await productosService.eliminar(id);
-      alert('Producto eliminado exitosamente');
+      toast.success('Producto eliminado exitosamente');
       loadProductos();
     } catch (error) {
-      alert('Error al eliminar producto');
+      toast.error('Error al eliminar producto');
     }
   };
 

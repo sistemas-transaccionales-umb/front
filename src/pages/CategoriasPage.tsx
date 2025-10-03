@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { PlusIcon, PencilIcon, TrashIcon } from '@heroicons/react/24/outline';
+import { toast } from 'react-toastify';
 import { categoriasService } from '../services';
 import type { Categoria, CreateCategoriaRequest } from '../services/categorias.service';
 
@@ -24,7 +25,7 @@ export default function CategoriasPage() {
       setCategorias(data);
     } catch (error) {
       console.error('Error cargando categorías:', error);
-      alert('Error al cargar categorías');
+      toast.error('Error al cargar categorías');
     } finally {
       setLoading(false);
     }
@@ -36,16 +37,17 @@ export default function CategoriasPage() {
       setLoading(true);
       if (editingCategoria) {
         await categoriasService.actualizar(editingCategoria.idCategoria, formData);
-        alert('Categoría actualizada exitosamente');
+        toast.success('Categoría actualizada exitosamente');
       } else {
         await categoriasService.crear(formData);
-        alert('Categoría creada exitosamente');
+        toast.success('Categoría creada exitosamente');
       }
       setShowModal(false);
       resetForm();
       loadCategorias();
-    } catch (error: any) {
-      alert(error.response?.data?.message || 'Error al guardar categoría');
+    } catch (error: unknown) {
+      const err = error as { response?: { data?: { message?: string } } };
+      toast.error(err.response?.data?.message || 'Error al guardar categoría');
     } finally {
       setLoading(false);
     }
@@ -72,10 +74,10 @@ export default function CategoriasPage() {
     if (!window.confirm('¿Está seguro de eliminar esta categoría?')) return;
     try {
       await categoriasService.eliminar(id);
-      alert('Categoría eliminada exitosamente');
+      toast.success('Categoría eliminada exitosamente');
       loadCategorias();
     } catch (error) {
-      alert('Error al eliminar categoría');
+      toast.error('Error al eliminar categoría');
     }
   };
 

@@ -6,6 +6,7 @@ import {
   TrashIcon,
   ShoppingCartIcon,
 } from '@heroicons/react/24/outline';
+import { toast } from 'react-toastify';
 import { ventasService, clientesService, productosService, bodegasService } from '../services';
 import { useAuth } from '../contexts/AuthContext';
 import type { CreateVentaRequest } from '../services/ventas.service';
@@ -127,15 +128,15 @@ export default function PuntoVentaPage() {
 
   const handleFinalizarVenta = async () => {
     if (!selectedCliente) {
-      alert('Debe seleccionar un cliente');
+      toast.warning('Debe seleccionar un cliente');
       return;
     }
     if (!selectedBodega) {
-      alert('Debe seleccionar una bodega');
+      toast.warning('Debe seleccionar una bodega');
       return;
     }
     if (carrito.length === 0) {
-      alert('El carrito está vacío');
+      toast.warning('El carrito está vacío');
       return;
     }
 
@@ -156,7 +157,7 @@ export default function PuntoVentaPage() {
       };
 
       await ventasService.crear(ventaData);
-      alert('Venta realizada exitosamente');
+      toast.success('Venta realizada exitosamente');
       
       // Limpiar formulario
       setCarrito([]);
@@ -164,8 +165,9 @@ export default function PuntoVentaPage() {
       setDescuento(0);
       setObservaciones('');
       setSearchProducto('');
-    } catch (error: any) {
-      alert(error.response?.data?.message || 'Error al realizar la venta');
+    } catch (error: unknown) {
+      const err = error as { response?: { data?: { message?: string } } };
+      toast.error(err.response?.data?.message || 'Error al realizar la venta');
     } finally {
       setLoading(false);
     }

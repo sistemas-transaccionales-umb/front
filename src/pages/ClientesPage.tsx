@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { PlusIcon, PencilIcon, TrashIcon, MagnifyingGlassIcon } from '@heroicons/react/24/outline';
+import { toast } from 'react-toastify';
 import { clientesService } from '../services';
 import type { Cliente, CreateClienteRequest } from '../services/clientes.service';
 
@@ -30,7 +31,7 @@ export default function ClientesPage() {
       setClientes(data);
     } catch (error) {
       console.error('Error cargando clientes:', error);
-      alert('Error al cargar clientes');
+      toast.error('Error al cargar clientes');
     } finally {
       setLoading(false);
     }
@@ -42,16 +43,17 @@ export default function ClientesPage() {
       setLoading(true);
       if (editingCliente) {
         await clientesService.actualizar(editingCliente.idCliente, formData);
-        alert('Cliente actualizado exitosamente');
+        toast.success('Cliente actualizado exitosamente');
       } else {
         await clientesService.crear(formData);
-        alert('Cliente creado exitosamente');
+        toast.success('Cliente creado exitosamente');
       }
       setShowModal(false);
       resetForm();
       loadClientes();
-    } catch (error: any) {
-      alert(error.response?.data?.message || 'Error al guardar cliente');
+    } catch (error: unknown) {
+      const err = error as { response?: { data?: { message?: string } } };
+      toast.error(err.response?.data?.message || 'Error al guardar cliente');
     } finally {
       setLoading(false);
     }
@@ -88,10 +90,10 @@ export default function ClientesPage() {
     if (!window.confirm('¿Está seguro de eliminar este cliente?')) return;
     try {
       await clientesService.eliminar(id);
-      alert('Cliente eliminado exitosamente');
+      toast.success('Cliente eliminado exitosamente');
       loadClientes();
     } catch (error) {
-      alert('Error al eliminar cliente');
+      toast.error('Error al eliminar cliente');
     }
   };
 

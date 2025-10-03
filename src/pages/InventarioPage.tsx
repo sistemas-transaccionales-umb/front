@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { ExclamationTriangleIcon, AdjustmentsHorizontalIcon } from '@heroicons/react/24/outline';
+import { toast } from 'react-toastify';
 import { inventarioService, bodegasService } from '../services';
 import type { Inventario } from '../services/inventario.service';
 import type { Bodega } from '../services/bodegas.service';
@@ -46,7 +47,7 @@ export default function InventarioPage() {
       }
     } catch (error) {
       console.error('Error cargando inventario:', error);
-      alert('Error al cargar inventario');
+      toast.error('Error al cargar inventario');
     } finally {
       setLoading(false);
     }
@@ -71,11 +72,12 @@ export default function InventarioPage() {
         cantidad: ajusteData.cantidad,
         motivo: ajusteData.motivo,
       });
-      alert('Ajuste realizado exitosamente');
+      toast.success('Ajuste realizado exitosamente');
       setShowAjusteModal(false);
       loadInventario();
-    } catch (error: any) {
-      alert(error.response?.data?.message || 'Error al realizar ajuste');
+    } catch (error: unknown) {
+      const err = error as { response?: { data?: { message?: string } } };
+      toast.error(err.response?.data?.message || 'Error al realizar ajuste');
     } finally {
       setLoading(false);
     }
@@ -85,6 +87,7 @@ export default function InventarioPage() {
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <h1 className="text-3xl font-bold text-gray-900">Control de Inventario</h1>
+        {/*  
         <div className="flex space-x-3">
           <button
             onClick={() => setShowStockBajo(!showStockBajo)}
@@ -98,6 +101,7 @@ export default function InventarioPage() {
             {showStockBajo ? 'Mostrar Todo' : 'Stock Bajo'}
           </button>
         </div>
+        */}
       </div>
 
       {/* Filtros */}

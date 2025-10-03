@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { PlusIcon, CheckIcon, XMarkIcon } from '@heroicons/react/24/outline';
+import { toast } from 'react-toastify';
 import { transferenciasService, bodegasService, productosService } from '../services';
 import { useAuth } from '../contexts/AuthContext';
 import type { Transferencia, CreateTransferenciaRequest } from '../services/transferencias.service';
@@ -67,18 +68,19 @@ export default function TransferenciasPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (formData.detalles.length === 0) {
-      alert('Debe agregar al menos un producto');
+      toast.warning('Debe agregar al menos un producto');
       return;
     }
     try {
       setLoading(true);
       await transferenciasService.crear(formData);
-      alert('Transferencia creada exitosamente');
+      toast.success('Transferencia creada exitosamente');
       setShowModal(false);
       resetForm();
       loadTransferencias();
-    } catch (error: any) {
-      alert(error.response?.data?.message || 'Error al crear transferencia');
+    } catch (error: unknown) {
+      const err = error as { response?: { data?: { message?: string } } };
+      toast.error(err.response?.data?.message || 'Error al crear transferencia');
     } finally {
       setLoading(false);
     }
@@ -97,7 +99,7 @@ export default function TransferenciasPage() {
 
   const agregarDetalle = () => {
     if (detalleActual.idProducto === 0 || detalleActual.cantidad <= 0) {
-      alert('Complete los datos del producto');
+      toast.warning('Complete los datos del producto');
       return;
     }
     setFormData({
@@ -118,10 +120,10 @@ export default function TransferenciasPage() {
     if (!window.confirm('¿Procesar esta transferencia?')) return;
     try {
       await transferenciasService.procesar(id);
-      alert('Transferencia procesada');
+      toast.success('Transferencia procesada');
       loadTransferencias();
     } catch (error) {
-      alert('Error al procesar transferencia');
+      toast.error('Error al procesar transferencia');
     }
   };
 
@@ -129,10 +131,10 @@ export default function TransferenciasPage() {
     if (!window.confirm('¿Confirmar recepción de esta transferencia?')) return;
     try {
       await transferenciasService.recibir(id);
-      alert('Transferencia recibida');
+      toast.success('Transferencia recibida');
       loadTransferencias();
     } catch (error) {
-      alert('Error al recibir transferencia');
+      toast.error('Error al recibir transferencia');
     }
   };
 

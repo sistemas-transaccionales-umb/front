@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { PlusIcon, PencilIcon } from '@heroicons/react/24/outline';
+import { toast } from 'react-toastify';
 import { authService } from '../services';
 import type { RegisterRequest } from '../types/auth';
 
@@ -42,17 +43,18 @@ export default function UsuariosPage() {
       setLoading(true);
       if (editingUser) {
         // Actualizar usuario
-        alert('Funcionalidad de actualización pendiente');
+        toast.info('Funcionalidad de actualización pendiente');
       } else {
         // Crear nuevo usuario
         await authService.register(formData);
-        alert('Usuario creado exitosamente');
+        toast.success('Usuario creado exitosamente');
       }
       setShowModal(false);
       resetForm();
       loadUsuarios();
-    } catch (error: any) {
-      alert(error.response?.data?.message || 'Error al guardar usuario');
+    } catch (error: unknown) {
+      const err = error as { response?: { data?: { message?: string } } };
+      toast.error(err.response?.data?.message || 'Error al guardar usuario');
     } finally {
       setLoading(false);
     }

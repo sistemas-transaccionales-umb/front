@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { PlusIcon, PencilIcon, TrashIcon } from '@heroicons/react/24/outline';
+import { toast } from 'react-toastify';
 import { bodegasService } from '../services';
 import type { Bodega, CreateBodegaRequest } from '../services/bodegas.service';
 
@@ -24,7 +25,7 @@ export default function BodegasPage() {
       setBodegas(data);
     } catch (error) {
       console.error('Error cargando bodegas:', error);
-      alert('Error al cargar bodegas');
+      toast.error('Error al cargar bodegas');
     } finally {
       setLoading(false);
     }
@@ -36,16 +37,17 @@ export default function BodegasPage() {
       setLoading(true);
       if (editingBodega) {
         await bodegasService.actualizar(editingBodega.idBodega, formData);
-        alert('Bodega actualizada exitosamente');
+        toast.success('Bodega actualizada exitosamente');
       } else {
         await bodegasService.crear(formData);
-        alert('Bodega creada exitosamente');
+        toast.success('Bodega creada exitosamente');
       }
       setShowModal(false);
       resetForm();
       loadBodegas();
-    } catch (error: any) {
-      alert(error.response?.data?.message || 'Error al guardar bodega');
+    } catch (error: unknown) {
+      const err = error as { response?: { data?: { message?: string } } };
+      toast.error(err.response?.data?.message || 'Error al guardar bodega');
     } finally {
       setLoading(false);
     }
@@ -72,10 +74,10 @@ export default function BodegasPage() {
     if (!window.confirm('¿Está seguro de eliminar esta bodega?')) return;
     try {
       await bodegasService.eliminar(id);
-      alert('Bodega eliminada exitosamente');
+      toast.success('Bodega eliminada exitosamente');
       loadBodegas();
     } catch (error) {
-      alert('Error al eliminar bodega');
+      toast.error('Error al eliminar bodega');
     }
   };
 

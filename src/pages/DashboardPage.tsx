@@ -95,7 +95,21 @@ export default function DashboardPage() {
       description: 'Entre bodegas',
     },
   ];
-
+  return (
+    <div className="space-y-6">
+      <div className="flex justify-between items-center">
+        <h1 className="text-3xl font-bold text-gray-900">Dashboard</h1>
+        <div className="text-sm text-gray-500">
+          {new Date().toLocaleDateString('es-CO', { 
+            weekday: 'long', 
+            year: 'numeric', 
+            month: 'long', 
+            day: 'numeric' 
+          })}
+        </div>
+      </div>
+    </div>
+  )
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">

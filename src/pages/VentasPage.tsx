@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { MagnifyingGlassIcon, DocumentTextIcon, CheckCircleIcon } from '@heroicons/react/24/outline';
+import { toast } from 'react-toastify';
 import { ventasService, clientesService } from '../services';
 import type { Venta } from '../services/ventas.service';
 import type { Cliente } from '../services/clientes.service';
@@ -29,7 +30,7 @@ export default function VentasPage() {
       setVentas(data);
     } catch (error) {
       console.error('Error cargando ventas:', error);
-      alert('Error al cargar ventas');
+      toast.error('Error al cargar ventas');
     } finally {
       setLoading(false);
     }
@@ -69,10 +70,10 @@ export default function VentasPage() {
   const handleActualizarEstado = async (idVenta: number, nuevoEstado: string) => {
     try {
       await ventasService.actualizarEstadoPago(idVenta, nuevoEstado);
-      alert('Estado actualizado exitosamente');
+      toast.success('Estado actualizado exitosamente');
       loadVentas();
     } catch (error) {
-      alert('Error al actualizar estado');
+      toast.error('Error al actualizar estado');
     }
   };
 

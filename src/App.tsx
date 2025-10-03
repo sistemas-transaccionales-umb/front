@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { ToastContainer } from 'react-toastify';
 import { AuthProvider } from './contexts/AuthContext';
 import { ProtectedRoute } from './components/auth/ProtectedRoute';
 import { Layout } from './components/layout/Layout';
@@ -14,6 +15,7 @@ import InventarioPage from './pages/InventarioPage';
 import TransferenciasPage from './pages/TransferenciasPage';
 import PuntoVentaPage from './pages/PuntoVentaPage';
 import VentasPage from './pages/VentasPage';
+import 'react-toastify/dist/ReactToastify.css';
 import './index.css';
 
 const queryClient = new QueryClient();
@@ -50,6 +52,18 @@ function App() {
                 }
               />
             </Routes>
+            <ToastContainer
+              position="top-right"
+              autoClose={3000}
+              hideProgressBar={false}
+              newestOnTop={false}
+              closeOnClick
+              rtl={false}
+              pauseOnFocusLoss
+              draggable
+              pauseOnHover
+              theme="light"
+            />
           </div>
         </BrowserRouter>
       </AuthProvider>

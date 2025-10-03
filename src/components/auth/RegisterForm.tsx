@@ -101,8 +101,8 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({ onSwitchToLogin }) =
             >
               <option value="">Seleccione un rol</option>
               <option value="1">Administrador</option>
-              <option value="2">Usuario</option>
-              <option value="3">Cliente</option>
+              <option value="2">Vendedor</option>
+              <option value="3">Almacenista</option>
             </select>
           </div>
           {errors.idRol && (
