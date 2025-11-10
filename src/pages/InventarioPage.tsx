@@ -10,7 +10,8 @@ export default function InventarioPage() {
   const [bodegas, setBodegas] = useState<Bodega[]>([]);
   const [loading, setLoading] = useState(false);
   const [selectedBodega, setSelectedBodega] = useState<number | 'all'>('all');
-  const [showStockBajo, setShowStockBajo] = useState(false);
+  const showStockBajo = false;
+  //const [showStockBajo, setShowStockBajo] = useState(false);
   const [showAjusteModal, setShowAjusteModal] = useState(false);
   const [selectedInventario, setSelectedInventario] = useState<Inventario | null>(null);
   const [ajusteData, setAjusteData] = useState({
