@@ -5,7 +5,9 @@ export { categoriasService } from './categorias.service';
 export { clientesService } from './clientes.service';
 export { inventarioService } from './inventario.service';
 export { productosService } from './productos.service';
+export { rolesService } from './roles.service';
 export { transferenciasService } from './transferencias.service';
+export { usuariosService } from './usuarios.service';
 export { ventasService } from './ventas.service';
 
 // Exportar tipos
@@ -40,6 +42,13 @@ export type {
   DetalleTransferencia, 
   CreateTransferenciaRequest 
 } from './transferencias.service';
+export type { 
+  Usuario,
+  Rol,
+  Permiso,
+  CreateUsuarioRequest, 
+  UpdateUsuarioRequest 
+} from './usuarios.service';
 export type { 
   Venta, 
   DetalleVenta, 

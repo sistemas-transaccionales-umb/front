@@ -1,41 +1,56 @@
 import { useEffect, useState } from 'react';
-import { PlusIcon, PencilIcon } from '@heroicons/react/24/outline';
+import { PlusIcon, PencilIcon, TrashIcon } from '@heroicons/react/24/outline';
 import { toast } from 'react-toastify';
-import { authService } from '../services';
-import type { RegisterRequest } from '../types/auth';
+import { usuariosService, rolesService } from '../services';
+import type { Usuario, CreateUsuarioRequest, UpdateUsuarioRequest, Rol } from '../services';
 import { ProtectedAction } from '../components/auth/ProtectedAction';
 import { Permission } from '../types/permissions';
 
 export default function UsuariosPage() {
-  const [usuarios, setUsuarios] = useState<any[]>([]);
+  const [usuarios, setUsuarios] = useState<Usuario[]>([]);
+  const [roles, setRoles] = useState<Rol[]>([]);
   const [loading, setLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
-  const [editingUser, setEditingUser] = useState<any>(null);
-  const [formData, setFormData] = useState<RegisterRequest>({
-    idRol: 2,
+  const [editingUser, setEditingUser] = useState<Usuario | null>(null);
+  const [formData, setFormData] = useState<CreateUsuarioRequest>({
+    idRol: 0,
     tipoDocumento: 'CC',
     numeroDocumento: '',
     nombres: '',
     apellidos: '',
     email: '',
-    password: '',
+    contrasena: '',
     telefono: '',
   });
 
   useEffect(() => {
     loadUsuarios();
+    loadRoles();
   }, []);
 
   const loadUsuarios = async () => {
     try {
       setLoading(true);
-      // Aquí deberías tener un endpoint para listar usuarios
-      // Por ahora simulamos con un array vacío
-      setUsuarios([]);
+      const data = await usuariosService.obtenerTodos();
+      setUsuarios(data);
     } catch (error) {
       console.error('Error cargando usuarios:', error);
+      toast.error('Error al cargar usuarios');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const loadRoles = async () => {
+    try {
+      const data = await rolesService.obtenerTodos();
+      setRoles(data);
+      if (data.length > 0 && !editingUser) {
+        setFormData(prev => ({ ...prev, idRol: data[0].idRol }));
+      }
+    } catch (error) {
+      console.error('Error cargando roles:', error);
+      toast.error('Error al cargar roles');
     }
   };
 
@@ -45,10 +60,15 @@ export default function UsuariosPage() {
       setLoading(true);
       if (editingUser) {
         // Actualizar usuario
-        toast.info('Funcionalidad de actualización pendiente');
+        const updateData: UpdateUsuarioRequest = {
+          ...formData,
+          contrasena: formData.contrasena || undefined, // No enviar si está vacío
+        };
+        await usuariosService.actualizar(editingUser.idUsuario, updateData);
+        toast.success('Usuario actualizado exitosamente');
       } else {
         // Crear nuevo usuario
-        await authService.register(formData);
+        await usuariosService.crear(formData);
         toast.success('Usuario creado exitosamente');
       }
       setShowModal(false);
@@ -64,45 +84,43 @@ export default function UsuariosPage() {
 
   const resetForm = () => {
     setFormData({
-      idRol: 2,
+      idRol: roles.length > 0 ? roles[0].idRol : 0,
       tipoDocumento: 'CC',
       numeroDocumento: '',
       nombres: '',
       apellidos: '',
       email: '',
-      password: '',
+      contrasena: '',
       telefono: '',
     });
     setEditingUser(null);
   };
 
-  const handleEdit = (usuario: any) => {
+  const handleEdit = (usuario: Usuario) => {
     setEditingUser(usuario);
     setFormData({
-      idRol: usuario.idRol,
+      idRol: usuario.rol.idRol,
       tipoDocumento: usuario.tipoDocumento,
       numeroDocumento: usuario.numeroDocumento,
       nombres: usuario.nombres,
       apellidos: usuario.apellidos,
       email: usuario.email,
-      password: '',
+      contrasena: '', // No mostrar contraseña actual
       telefono: usuario.telefono,
     });
     setShowModal(true);
   };
 
-  /*
   const handleDelete = async (id: number) => {
-    if (!window.confirm('¿Está seguro de eliminar este usuario?')) return;
+    if (!window.confirm('¿Está seguro de desactivar este usuario?')) return;
     try {
-      // Implementar endpoint de eliminación
-      alert('Funcionalidad de eliminación pendiente');
+      await usuariosService.eliminar(id);
+      toast.success('Usuario desactivado exitosamente');
       loadUsuarios();
     } catch (error) {
-      alert('Error al eliminar usuario');
+      toast.error('Error al desactivar usuario');
     }
   };
-  */
 
   return (
     <div className="space-y-6">
@@ -162,15 +180,23 @@ export default function UsuariosPage() {
               </tr>
             ) : (
               usuarios.map((usuario) => (
-                <tr key={usuario.idUsuario}>
+                <tr key={usuario.idUsuario} className="hover:bg-gray-50">
                   <td className="px-6 py-4 whitespace-nowrap">
-                    {usuario.nombres} {usuario.apellidos}
+                    <div className="text-sm font-medium text-gray-900">
+                      {usuario.nombres} {usuario.apellidos}
+                    </div>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
+                  <td className="px-6 py-4 whitespace-nowrap text-sm">
                     {usuario.tipoDocumento} {usuario.numeroDocumento}
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap">{usuario.email}</td>
-                  <td className="px-6 py-4 whitespace-nowrap">{usuario.nombreRol}</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm">
+                    {usuario.email}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <span className="px-2 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-800">
+                      {usuario.rol.nombreRol}
+                    </span>
+                  </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <span
                       className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
@@ -192,17 +218,15 @@ export default function UsuariosPage() {
                         <PencilIcon className="h-5 w-5 inline" />
                       </button>
                     </ProtectedAction>
-                    {/*
                     <ProtectedAction permission={Permission.USUARIOS_ELIMINAR}>
                       <button
                         onClick={() => handleDelete(usuario.idUsuario)}
                         className="text-red-600 hover:text-red-900"
-                        title="Eliminar usuario"
+                        title="Desactivar usuario"
                       >
                         <TrashIcon className="h-5 w-5 inline" />
                       </button>
                     </ProtectedAction>
-                    */}
                   </td>
                 </tr>
               ))
@@ -297,20 +321,19 @@ export default function UsuariosPage() {
                 />
               </div>
 
-              {!editingUser && (
-                <div>
-                  <label className="block text-sm font-medium text-gray-700">
-                    Contraseña
-                  </label>
-                  <input
-                    type="password"
-                    value={formData.password}
-                    onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                    required={!editingUser}
-                  />
-                </div>
-              )}
+              <div>
+                <label className="block text-sm font-medium text-gray-700">
+                  Contraseña {editingUser && '(dejar vacío para no cambiar)'}
+                </label>
+                <input
+                  type="password"
+                  value={formData.contrasena}
+                  onChange={(e) => setFormData({ ...formData, contrasena: e.target.value })}
+                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                  required={!editingUser}
+                  placeholder={editingUser ? 'Dejar vacío para mantener la actual' : ''}
+                />
+              </div>
 
               <div>
                 <label className="block text-sm font-medium text-gray-700">Rol</label>
@@ -322,9 +345,12 @@ export default function UsuariosPage() {
                   className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
                   required
                 >
-                  <option value={1}>Administrador</option>
-                  <option value={2}>Vendedor</option>
-                  <option value={3}>Encargado</option>
+                  <option value="">Seleccione un rol...</option>
+                  {roles.map((rol) => (
+                    <option key={rol.idRol} value={rol.idRol}>
+                      {rol.nombreRol}
+                    </option>
+                  ))}
                 </select>
               </div>
 
