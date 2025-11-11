@@ -62,7 +62,7 @@ images:
 substitutions:
   _REGION: 'us-east1'
   _REPOSITORY: 'haroldsoftware'
-  _IMAGE_NAME: 'front-end'
-  _SERVICE_NAME: 'front-end-service'
+  _IMAGE_NAME: 'sistemas-transaccionales-frontend'
+  _SERVICE_NAME: 'sistemas-transaccionales-frontend-service'
 
-#docker buildx build -t front-end --platform linux/amd64 . && docker tag front-end us-east1-docker.pkg.dev/umb-sistemas-transaccionales/haroldsoftware/front-end:latest && docker push us-east1-docker.pkg.dev/umb-sistemas-transaccionales/haroldsoftware/front-end:latest
+#docker buildx build -t sistemas-transaccionales-frontend --platform linux/amd64 . && docker tag sistemas-transaccionales-frontend us-east1-docker.pkg.dev/umb-sistemas-transaccionales/haroldsoftware/sistemas-transaccionales-frontend:latest && docker push us-east1-docker.pkg.dev/umb-sistemas-transaccionales/haroldsoftware/sistemas-transaccionales-frontend:latest
