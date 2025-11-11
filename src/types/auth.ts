@@ -9,6 +9,7 @@ export interface User {
   idRol: number;
   nombreRol: string;
   estado: string;
+  permisos: string[];
 }
 
 export interface LoginRequest {
@@ -28,6 +29,7 @@ export interface RegisterRequest {
 }
 
 export interface AuthResponse extends User {
+  permisos: string[];
   token: string;
   expiresIn: number;
   message: string;
@@ -55,4 +57,7 @@ export interface AuthContextType {
   logout: () => void;
   isLoading: boolean;
   isAuthenticated: boolean;
+  hasPermission: (permission: string | string[]) => boolean;
+  hasAnyPermission: (permissions: string[]) => boolean;
+  hasAllPermissions: (permissions: string[]) => boolean;
 } 

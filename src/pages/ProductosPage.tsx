@@ -4,6 +4,8 @@ import { toast } from 'react-toastify';
 import { productosService, categoriasService } from '../services';
 import type { Producto, CreateProductoRequest } from '../services/productos.service';
 import type { Categoria } from '../services/categorias.service';
+import { ProtectedAction } from '../components/auth/ProtectedAction';
+import { Permission } from '../types/permissions';
 
 export default function ProductosPage() {
   const [productos, setProductos] = useState<Producto[]>([]);
@@ -122,16 +124,18 @@ export default function ProductosPage() {
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <h1 className="text-3xl font-bold text-gray-900">Gestión de Productos</h1>
-        <button
-          onClick={() => {
-            resetForm();
-            setShowModal(true);
-          }}
-          className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
-        >
-          <PlusIcon className="h-5 w-5 mr-2" />
-          Nuevo Producto
-        </button>
+        <ProtectedAction permission={Permission.PRODUCTOS_CREAR}>
+          <button
+            onClick={() => {
+              resetForm();
+              setShowModal(true);
+            }}
+            className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+          >
+            <PlusIcon className="h-5 w-5 mr-2" />
+            Nuevo Producto
+          </button>
+        </ProtectedAction>
       </div>
 
       {/* Buscador */}
@@ -231,18 +235,24 @@ export default function ProductosPage() {
                       </span>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-2">
-                      <button
-                        onClick={() => handleEdit(producto)}
-                        className="text-blue-600 hover:text-blue-900"
-                      >
-                        <PencilIcon className="h-5 w-5 inline" />
-                      </button>
-                      <button
-                        onClick={() => handleDelete(producto.idProducto)}
-                        className="text-red-600 hover:text-red-900"
-                      >
-                        <TrashIcon className="h-5 w-5 inline" />
-                      </button>
+                      <ProtectedAction permission={Permission.PRODUCTOS_ACTUALIZAR}>
+                        <button
+                          onClick={() => handleEdit(producto)}
+                          className="text-blue-600 hover:text-blue-900"
+                          title="Editar producto"
+                        >
+                          <PencilIcon className="h-5 w-5 inline" />
+                        </button>
+                      </ProtectedAction>
+                      <ProtectedAction permission={Permission.PRODUCTOS_ELIMINAR}>
+                        <button
+                          onClick={() => handleDelete(producto.idProducto)}
+                          className="text-red-600 hover:text-red-900"
+                          title="Eliminar producto"
+                        >
+                          <TrashIcon className="h-5 w-5 inline" />
+                        </button>
+                      </ProtectedAction>
                     </td>
                   </tr>
                 ))

@@ -3,6 +3,8 @@ import { PlusIcon, PencilIcon } from '@heroicons/react/24/outline';
 import { toast } from 'react-toastify';
 import { authService } from '../services';
 import type { RegisterRequest } from '../types/auth';
+import { ProtectedAction } from '../components/auth/ProtectedAction';
+import { Permission } from '../types/permissions';
 
 export default function UsuariosPage() {
   const [usuarios, setUsuarios] = useState<any[]>([]);
@@ -106,16 +108,18 @@ export default function UsuariosPage() {
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <h1 className="text-3xl font-bold text-gray-900">Gestión de Usuarios</h1>
-        <button
-          onClick={() => {
-            resetForm();
-            setShowModal(true);
-          }}
-          className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
-        >
-          <PlusIcon className="h-5 w-5 mr-2" />
-          Nuevo Usuario
-        </button>
+        <ProtectedAction permission={Permission.USUARIOS_CREAR}>
+          <button
+            onClick={() => {
+              resetForm();
+              setShowModal(true);
+            }}
+            className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+          >
+            <PlusIcon className="h-5 w-5 mr-2" />
+            Nuevo Usuario
+          </button>
+        </ProtectedAction>
       </div>
 
       {/* Tabla de Usuarios */}
@@ -179,19 +183,25 @@ export default function UsuariosPage() {
                     </span>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-2">
-                    <button
-                      onClick={() => handleEdit(usuario)}
-                      className="text-blue-600 hover:text-blue-900"
-                    >
-                      <PencilIcon className="h-5 w-5 inline" />
-                    </button>
+                    <ProtectedAction permission={Permission.USUARIOS_ACTUALIZAR}>
+                      <button
+                        onClick={() => handleEdit(usuario)}
+                        className="text-blue-600 hover:text-blue-900"
+                        title="Editar usuario"
+                      >
+                        <PencilIcon className="h-5 w-5 inline" />
+                      </button>
+                    </ProtectedAction>
                     {/*
-                    <button
-                      onClick={() => handleDelete(usuario.idUsuario)}
-                      className="text-red-600 hover:text-red-900"
-                    >
-                      <TrashIcon className="h-5 w-5 inline" />
-                    </button>
+                    <ProtectedAction permission={Permission.USUARIOS_ELIMINAR}>
+                      <button
+                        onClick={() => handleDelete(usuario.idUsuario)}
+                        className="text-red-600 hover:text-red-900"
+                        title="Eliminar usuario"
+                      >
+                        <TrashIcon className="h-5 w-5 inline" />
+                      </button>
+                    </ProtectedAction>
                     */}
                   </td>
                 </tr>

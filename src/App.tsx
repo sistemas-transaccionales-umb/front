@@ -15,6 +15,7 @@ import InventarioPage from './pages/InventarioPage';
 import TransferenciasPage from './pages/TransferenciasPage';
 import PuntoVentaPage from './pages/PuntoVentaPage';
 import VentasPage from './pages/VentasPage';
+import { Permission } from './types/permissions';
 import 'react-toastify/dist/ReactToastify.css';
 import './index.css';
 
@@ -36,15 +37,78 @@ function App() {
                       <Routes>
                         <Route path="/" element={<Navigate to="/dashboard" replace />} />
                         <Route path="/dashboard" element={<DashboardPage />} />
-                        <Route path="/usuarios" element={<UsuariosPage />} />
-                        <Route path="/clientes" element={<ClientesPage />} />
-                        <Route path="/bodegas" element={<BodegasPage />} />
-                        <Route path="/categorias" element={<CategoriasPage />} />
-                        <Route path="/productos" element={<ProductosPage />} />
-                        <Route path="/inventario" element={<InventarioPage />} />
-                        <Route path="/transferencias" element={<TransferenciasPage />} />
-                        <Route path="/punto-venta" element={<PuntoVentaPage />} />
-                        <Route path="/ventas" element={<VentasPage />} />
+                        <Route 
+                          path="/usuarios" 
+                          element={
+                            <ProtectedRoute requiredPermission={Permission.USUARIOS_LEER}>
+                              <UsuariosPage />
+                            </ProtectedRoute>
+                          } 
+                        />
+                        <Route 
+                          path="/clientes" 
+                          element={
+                            <ProtectedRoute requiredPermission={Permission.CLIENTES_LEER}>
+                              <ClientesPage />
+                            </ProtectedRoute>
+                          } 
+                        />
+                        <Route 
+                          path="/bodegas" 
+                          element={
+                            <ProtectedRoute requiredPermission={Permission.BODEGAS_LEER}>
+                              <BodegasPage />
+                            </ProtectedRoute>
+                          } 
+                        />
+                        <Route 
+                          path="/categorias" 
+                          element={
+                            <ProtectedRoute requiredPermission={Permission.CATEGORIAS_LEER}>
+                              <CategoriasPage />
+                            </ProtectedRoute>
+                          } 
+                        />
+                        <Route 
+                          path="/productos" 
+                          element={
+                            <ProtectedRoute requiredPermission={Permission.PRODUCTOS_LEER}>
+                              <ProductosPage />
+                            </ProtectedRoute>
+                          } 
+                        />
+                        <Route 
+                          path="/inventario" 
+                          element={
+                            <ProtectedRoute requiredPermission={Permission.INVENTARIO_LEER}>
+                              <InventarioPage />
+                            </ProtectedRoute>
+                          } 
+                        />
+                        <Route 
+                          path="/transferencias" 
+                          element={
+                            <ProtectedRoute requiredPermission={Permission.TRANSFERENCIAS_LEER}>
+                              <TransferenciasPage />
+                            </ProtectedRoute>
+                          } 
+                        />
+                        <Route 
+                          path="/punto-venta" 
+                          element={
+                            <ProtectedRoute requiredPermission={Permission.VENTAS_CREAR}>
+                              <PuntoVentaPage />
+                            </ProtectedRoute>
+                          } 
+                        />
+                        <Route 
+                          path="/ventas" 
+                          element={
+                            <ProtectedRoute requiredPermission={Permission.VENTAS_LEER}>
+                              <VentasPage />
+                            </ProtectedRoute>
+                          } 
+                        />
                         <Route path="*" element={<Navigate to="/dashboard" replace />} />
                       </Routes>
                     </Layout>

@@ -3,6 +3,8 @@ import { PlusIcon, PencilIcon, TrashIcon, MagnifyingGlassIcon } from '@heroicons
 import { toast } from 'react-toastify';
 import { clientesService } from '../services';
 import type { Cliente, CreateClienteRequest } from '../services/clientes.service';
+import { ProtectedAction } from '../components/auth/ProtectedAction';
+import { Permission } from '../types/permissions';
 
 export default function ClientesPage() {
   const [clientes, setClientes] = useState<Cliente[]>([]);
@@ -109,16 +111,18 @@ export default function ClientesPage() {
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <h1 className="text-3xl font-bold text-gray-900">Gestión de Clientes</h1>
-        <button
-          onClick={() => {
-            resetForm();
-            setShowModal(true);
-          }}
-          className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
-        >
-          <PlusIcon className="h-5 w-5 mr-2" />
-          Nuevo Cliente
-        </button>
+        <ProtectedAction permission={Permission.CLIENTES_CREAR}>
+          <button
+            onClick={() => {
+              resetForm();
+              setShowModal(true);
+            }}
+            className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+          >
+            <PlusIcon className="h-5 w-5 mr-2" />
+            Nuevo Cliente
+          </button>
+        </ProtectedAction>
       </div>
 
       {/* Buscador */}
@@ -196,18 +200,24 @@ export default function ClientesPage() {
                     </span>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-2">
-                    <button
-                      onClick={() => handleEdit(cliente)}
-                      className="text-blue-600 hover:text-blue-900"
-                    >
-                      <PencilIcon className="h-5 w-5 inline" />
-                    </button>
-                    <button
-                      onClick={() => handleDelete(cliente.idCliente)}
-                      className="text-red-600 hover:text-red-900"
-                    >
-                      <TrashIcon className="h-5 w-5 inline" />
-                    </button>
+                    <ProtectedAction permission={Permission.CLIENTES_ACTUALIZAR}>
+                      <button
+                        onClick={() => handleEdit(cliente)}
+                        className="text-blue-600 hover:text-blue-900"
+                        title="Editar cliente"
+                      >
+                        <PencilIcon className="h-5 w-5 inline" />
+                      </button>
+                    </ProtectedAction>
+                    <ProtectedAction permission={Permission.CLIENTES_ELIMINAR}>
+                      <button
+                        onClick={() => handleDelete(cliente.idCliente)}
+                        className="text-red-600 hover:text-red-900"
+                        title="Eliminar cliente"
+                      >
+                        <TrashIcon className="h-5 w-5 inline" />
+                      </button>
+                    </ProtectedAction>
                   </td>
                 </tr>
               ))

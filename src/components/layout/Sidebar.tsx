@@ -14,39 +14,90 @@ import {
   XMarkIcon,
 } from '@heroicons/react/24/outline';
 import { useAuth } from '../../contexts/AuthContext';
+import { Permission } from '../../types/permissions';
 
 interface NavigationItem {
   name: string;
   href?: string;
   icon?: React.ComponentType<{ className?: string; 'aria-hidden'?: boolean }>;
   items?: NavigationItem[];
-  roles?: number[]; // Roles permitidos: 1=Admin, 2=Vendedor, 3=Almacenista
+  permissions?: string[]; // Permisos requeridos (al menos uno)
 }
 
 const allNavigation: NavigationItem[] = [
-  { name: 'Dashboard', href: '/dashboard', icon: HomeIcon, roles: [1, 2, 3] },
+  { 
+    name: 'Dashboard', 
+    href: '/dashboard', 
+    icon: HomeIcon, 
+    permissions: [] // Accesible para todos los usuarios autenticados
+  },
   { 
     name: 'Administración', 
     items: [
-      { name: 'Usuarios', href: '/usuarios', icon: UsersIcon, roles: [1] },
-      { name: 'Clientes', href: '/clientes', icon: UserGroupIcon, roles: [1, 2] },
-      { name: 'Bodegas', href: '/bodegas', icon: BuildingStorefrontIcon, roles: [1, 3] },
-      { name: 'Categorías', href: '/categorias', icon: TagIcon, roles: [1, 3] },
+      { 
+        name: 'Usuarios', 
+        href: '/usuarios', 
+        icon: UsersIcon, 
+        permissions: [Permission.USUARIOS_LEER] 
+      },
+      { 
+        name: 'Clientes', 
+        href: '/clientes', 
+        icon: UserGroupIcon, 
+        permissions: [Permission.CLIENTES_LEER] 
+      },
+      { 
+        name: 'Bodegas', 
+        href: '/bodegas', 
+        icon: BuildingStorefrontIcon, 
+        permissions: [Permission.BODEGAS_LEER] 
+      },
+      { 
+        name: 'Categorías', 
+        href: '/categorias', 
+        icon: TagIcon, 
+        permissions: [Permission.CATEGORIAS_LEER] 
+      },
     ]
   },
   { 
     name: 'Inventario', 
     items: [
-      { name: 'Productos', href: '/productos', icon: CubeIcon, roles: [1, 2, 3] },
-      { name: 'Control de Stock', href: '/inventario', icon: ChartBarIcon, roles: [1, 3] },
-      { name: 'Transferencias', href: '/transferencias', icon: ArrowsRightLeftIcon, roles: [1, 3] },
+      { 
+        name: 'Productos', 
+        href: '/productos', 
+        icon: CubeIcon, 
+        permissions: [Permission.PRODUCTOS_LEER] 
+      },
+      { 
+        name: 'Control de Stock', 
+        href: '/inventario', 
+        icon: ChartBarIcon, 
+        permissions: [Permission.INVENTARIO_LEER] 
+      },
+      { 
+        name: 'Transferencias', 
+        href: '/transferencias', 
+        icon: ArrowsRightLeftIcon, 
+        permissions: [Permission.TRANSFERENCIAS_LEER] 
+      },
     ]
   },
   { 
     name: 'Ventas', 
     items: [
-      { name: 'Punto de Venta', href: '/punto-venta', icon: ShoppingCartIcon, roles: [1, 2] },
-      { name: 'Historial de Ventas', href: '/ventas', icon: DocumentTextIcon, roles: [1, 2] },
+      { 
+        name: 'Punto de Venta', 
+        href: '/punto-venta', 
+        icon: ShoppingCartIcon, 
+        permissions: [Permission.VENTAS_CREAR] 
+      },
+      { 
+        name: 'Historial de Ventas', 
+        href: '/ventas', 
+        icon: DocumentTextIcon, 
+        permissions: [Permission.VENTAS_LEER] 
+      },
     ]
   },
 ];
@@ -57,29 +108,33 @@ interface SidebarProps {
 }
 
 export const Sidebar: React.FC<SidebarProps> = ({ onClose, isMobile }) => {
-  const { user } = useAuth();
+  const { user, hasAnyPermission } = useAuth();
 
-  // Filtrar navegación según el rol del usuario
+  // Filtrar navegación según los permisos del usuario
   const navigation = useMemo(() => {
     if (!user) return [];
 
     return allNavigation
       .map((section) => {
         if (section.items) {
-          // Filtrar items de la sección
-          const filteredItems = section.items.filter((item) =>
-            item.roles?.includes(user.idRol)
-          );
+          // Filtrar items de la sección según permisos
+          const filteredItems = section.items.filter((item) => {
+            // Si no requiere permisos específicos, es accesible para todos
+            if (!item.permissions || item.permissions.length === 0) return true;
+            // Verificar si tiene al menos uno de los permisos requeridos
+            return hasAnyPermission(item.permissions);
+          });
           // Solo mostrar la sección si tiene items visibles
           return filteredItems.length > 0
             ? { ...section, items: filteredItems }
             : null;
         }
         // Item individual
-        return section.roles?.includes(user.idRol) ? section : null;
+        if (!section.permissions || section.permissions.length === 0) return section;
+        return hasAnyPermission(section.permissions) ? section : null;
       })
       .filter((section): section is NavigationItem => section !== null);
-  }, [user]);
+  }, [user, hasAnyPermission]);
   return (
     <div className={`${isMobile ? 'w-64' : 'w-64'} bg-white shadow-sm border-r border-gray-200 min-h-screen`}>
       {/* Mobile header with close button */}

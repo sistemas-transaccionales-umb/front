@@ -4,6 +4,8 @@ import { toast } from 'react-toastify';
 import { ventasService, clientesService } from '../services';
 import type { Venta } from '../services/ventas.service';
 import type { Cliente } from '../services/clientes.service';
+import { ProtectedAction } from '../components/auth/ProtectedAction';
+import { Permission } from '../types/permissions';
 
 export default function VentasPage() {
   const [ventas, setVentas] = useState<Venta[]>([]);
@@ -244,16 +246,20 @@ export default function VentasPage() {
                       <button
                         onClick={() => verDetalle(venta)}
                         className="text-blue-600 hover:text-blue-900"
+                        title="Ver detalle"
                       >
                         <DocumentTextIcon className="h-5 w-5 inline" />
                       </button>
                       {venta.estadoPago === 'PENDIENTE' && (
-                        <button
-                          onClick={() => handleActualizarEstado(venta.idVenta, 'PAGADO')}
-                          className="text-green-600 hover:text-green-900"
-                        >
-                          <CheckCircleIcon className="h-5 w-5 inline" />
-                        </button>
+                        <ProtectedAction permission={Permission.VENTAS_ACTUALIZAR}>
+                          <button
+                            onClick={() => handleActualizarEstado(venta.idVenta, 'PAGADO')}
+                            className="text-green-600 hover:text-green-900"
+                            title="Marcar como pagado"
+                          >
+                            <CheckCircleIcon className="h-5 w-5 inline" />
+                          </button>
+                        </ProtectedAction>
                       )}
                     </td>
                   </tr>

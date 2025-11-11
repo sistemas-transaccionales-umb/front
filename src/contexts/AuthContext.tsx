@@ -32,7 +32,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       const response = await authService.login(credentials);
       
       if(response.token){
-        // Extraer solo los datos del usuario sin campos de autenticación
+        // Extraer solo los datos del usuario incluyendo permisos
         const userData: User = {
           idUsuario: response.idUsuario,
           nombres: response.nombres,
@@ -44,6 +44,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
           idRol: response.idRol,
           nombreRol: response.nombreRol,
           estado: response.estado,
+          permisos: response.permisos || [],
         };
         
         setUser(userData);
@@ -75,6 +76,28 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     authService.logout();
   };
 
+  // Funciones de verificación de permisos
+  const hasPermission = (permission: string | string[]): boolean => {
+    if (!user || !user.permisos) return false;
+    
+    if (Array.isArray(permission)) {
+      // Si se pasa un array, verifica que tenga al menos uno de los permisos
+      return permission.some(p => user.permisos.includes(p));
+    }
+    
+    return user.permisos.includes(permission);
+  };
+
+  const hasAnyPermission = (permissions: string[]): boolean => {
+    if (!user || !user.permisos) return false;
+    return permissions.some(p => user.permisos.includes(p));
+  };
+
+  const hasAllPermissions = (permissions: string[]): boolean => {
+    if (!user || !user.permisos) return false;
+    return permissions.every(p => user.permisos.includes(p));
+  };
+
   const isAuthenticated = !!token && !!user;
 
   const value: AuthContextType = useMemo(() => ({
@@ -85,6 +108,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     logout,
     isLoading,
     isAuthenticated,
+    hasPermission,
+    hasAnyPermission,
+    hasAllPermissions,
   }), [user, token, isLoading, isAuthenticated]);
 
   return (

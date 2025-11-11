@@ -4,6 +4,8 @@ import { toast } from 'react-toastify';
 import { inventarioService, bodegasService } from '../services';
 import type { Inventario } from '../services/inventario.service';
 import type { Bodega } from '../services/bodegas.service';
+import { ProtectedAction } from '../components/auth/ProtectedAction';
+import { Permission } from '../types/permissions';
 
 export default function InventarioPage() {
   const [inventario, setInventario] = useState<Inventario[]>([]);
@@ -223,13 +225,16 @@ export default function InventarioPage() {
                       {new Date(item.fechaActualizacion).toLocaleDateString('es-CO')}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                      <button
-                        onClick={() => handleAjustar(item)}
-                        className="text-blue-600 hover:text-blue-900"
-                      >
-                        <AdjustmentsHorizontalIcon className="h-5 w-5 inline mr-1" />
-                        Ajustar
-                      </button>
+                      <ProtectedAction permission={Permission.INVENTARIO_AJUSTAR}>
+                        <button
+                          onClick={() => handleAjustar(item)}
+                          className="text-blue-600 hover:text-blue-900"
+                          title="Ajustar inventario"
+                        >
+                          <AdjustmentsHorizontalIcon className="h-5 w-5 inline mr-1" />
+                          Ajustar
+                        </button>
+                      </ProtectedAction>
                     </td>
                   </tr>
                 ))

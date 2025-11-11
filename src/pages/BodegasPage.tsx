@@ -3,6 +3,8 @@ import { PlusIcon, PencilIcon, TrashIcon } from '@heroicons/react/24/outline';
 import { toast } from 'react-toastify';
 import { bodegasService } from '../services';
 import type { Bodega, CreateBodegaRequest } from '../services/bodegas.service';
+import { ProtectedAction } from '../components/auth/ProtectedAction';
+import { Permission } from '../types/permissions';
 
 export default function BodegasPage() {
   const [bodegas, setBodegas] = useState<Bodega[]>([]);
@@ -85,16 +87,18 @@ export default function BodegasPage() {
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <h1 className="text-3xl font-bold text-gray-900">Gestión de Bodegas</h1>
-        <button
-          onClick={() => {
-            resetForm();
-            setShowModal(true);
-          }}
-          className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
-        >
-          <PlusIcon className="h-5 w-5 mr-2" />
-          Nueva Bodega
-        </button>
+        <ProtectedAction permission={Permission.BODEGAS_CREAR}>
+          <button
+            onClick={() => {
+              resetForm();
+              setShowModal(true);
+            }}
+            className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+          >
+            <PlusIcon className="h-5 w-5 mr-2" />
+            Nueva Bodega
+          </button>
+        </ProtectedAction>
       </div>
 
       {/* Tabla de Bodegas */}
@@ -154,18 +158,24 @@ export default function BodegasPage() {
                     {new Date(bodega.fechaCreacion).toLocaleDateString('es-CO')}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-2">
-                    <button
-                      onClick={() => handleEdit(bodega)}
-                      className="text-blue-600 hover:text-blue-900"
-                    >
-                      <PencilIcon className="h-5 w-5 inline" />
-                    </button>
-                    <button
-                      onClick={() => handleDelete(bodega.idBodega)}
-                      className="text-red-600 hover:text-red-900"
-                    >
-                      <TrashIcon className="h-5 w-5 inline" />
-                    </button>
+                    <ProtectedAction permission={Permission.BODEGAS_ACTUALIZAR}>
+                      <button
+                        onClick={() => handleEdit(bodega)}
+                        className="text-blue-600 hover:text-blue-900"
+                        title="Editar bodega"
+                      >
+                        <PencilIcon className="h-5 w-5 inline" />
+                      </button>
+                    </ProtectedAction>
+                    <ProtectedAction permission={Permission.BODEGAS_ELIMINAR}>
+                      <button
+                        onClick={() => handleDelete(bodega.idBodega)}
+                        className="text-red-600 hover:text-red-900"
+                        title="Eliminar bodega"
+                      >
+                        <TrashIcon className="h-5 w-5 inline" />
+                      </button>
+                    </ProtectedAction>
                   </td>
                 </tr>
               ))

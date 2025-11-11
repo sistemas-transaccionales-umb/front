@@ -6,6 +6,8 @@ import { useAuth } from '../contexts/AuthContext';
 import type { Transferencia, CreateTransferenciaRequest } from '../services/transferencias.service';
 import type { Bodega } from '../services/bodegas.service';
 import type { Producto } from '../services/productos.service';
+import { ProtectedAction } from '../components/auth/ProtectedAction';
+import { Permission } from '../types/permissions';
 
 export default function TransferenciasPage() {
   const { user } = useAuth();
@@ -164,16 +166,18 @@ export default function TransferenciasPage() {
           >
             {showPendientes ? 'Mostrar Todas' : 'Solo Pendientes'}
           </button>
-          <button
-            onClick={() => {
-              resetForm();
-              setShowModal(true);
-            }}
-            className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
-          >
-            <PlusIcon className="h-5 w-5 mr-2" />
-            Nueva Transferencia
-          </button>
+          <ProtectedAction permission={Permission.TRANSFERENCIAS_CREAR}>
+            <button
+              onClick={() => {
+                resetForm();
+                setShowModal(true);
+              }}
+              className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+            >
+              <PlusIcon className="h-5 w-5 mr-2" />
+              Nueva Transferencia
+            </button>
+          </ProtectedAction>
         </div>
       </div>
 
@@ -241,22 +245,26 @@ export default function TransferenciasPage() {
               {/* Acciones */}
               <div className="flex space-x-2 mt-4">
                 {transferencia.estado === 'PENDIENTE' && (
-                  <button
-                    onClick={() => handleProcesar(transferencia.idTransferencia)}
-                    className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
-                  >
-                    <CheckIcon className="h-4 w-4 mr-1" />
-                    Procesar
-                  </button>
+                  <ProtectedAction permission={Permission.TRANSFERENCIAS_APROBAR}>
+                    <button
+                      onClick={() => handleProcesar(transferencia.idTransferencia)}
+                      className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+                    >
+                      <CheckIcon className="h-4 w-4 mr-1" />
+                      Procesar
+                    </button>
+                  </ProtectedAction>
                 )}
                 {transferencia.estado === 'PROCESADO' && (
-                  <button
-                    onClick={() => handleRecibir(transferencia.idTransferencia)}
-                    className="flex items-center px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700"
-                  >
-                    <CheckIcon className="h-4 w-4 mr-1" />
-                    Recibir
-                  </button>
+                  <ProtectedAction permission={Permission.TRANSFERENCIAS_APROBAR}>
+                    <button
+                      onClick={() => handleRecibir(transferencia.idTransferencia)}
+                      className="flex items-center px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700"
+                    >
+                      <CheckIcon className="h-4 w-4 mr-1" />
+                      Recibir
+                    </button>
+                  </ProtectedAction>
                 )}
               </div>
             </div>
