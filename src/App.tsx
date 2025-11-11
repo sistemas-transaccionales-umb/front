@@ -13,6 +13,8 @@ import CategoriasPage from './pages/CategoriasPage';
 import ProductosPage from './pages/ProductosPage';
 import InventarioPage from './pages/InventarioPage';
 import TransferenciasPage from './pages/TransferenciasPage';
+import ProveedoresPage from './pages/ProveedoresPage';
+import ComprasPage from './pages/ComprasPage';
 import PuntoVentaPage from './pages/PuntoVentaPage';
 import VentasPage from './pages/VentasPage';
 import { Permission } from './types/permissions';
@@ -90,6 +92,22 @@ function App() {
                           element={
                             <ProtectedRoute requiredPermission={Permission.TRANSFERENCIAS_LEER}>
                               <TransferenciasPage />
+                            </ProtectedRoute>
+                          } 
+                        />
+                        <Route 
+                          path="/proveedores" 
+                          element={
+                            <ProtectedRoute requiredPermission={Permission.PROVEEDORES_LEER}>
+                              <ProveedoresPage />
+                            </ProtectedRoute>
+                          } 
+                        />
+                        <Route 
+                          path="/compras" 
+                          element={
+                            <ProtectedRoute requiredPermission={Permission.COMPRAS_LEER}>
+                              <ComprasPage />
                             </ProtectedRoute>
                           } 
                         />

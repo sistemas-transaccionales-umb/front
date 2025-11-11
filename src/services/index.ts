@@ -3,8 +3,10 @@ export { authService } from './auth.service';
 export { bodegasService } from './bodegas.service';
 export { categoriasService } from './categorias.service';
 export { clientesService } from './clientes.service';
+export { comprasService } from './compras.service';
 export { inventarioService } from './inventario.service';
 export { productosService } from './productos.service';
+export { proveedoresService } from './proveedores.service';
 export { rolesService } from './roles.service';
 export { transferenciasService } from './transferencias.service';
 export { usuariosService } from './usuarios.service';
@@ -27,11 +29,25 @@ export type {
   CreateClienteRequest, 
   UpdateClienteRequest 
 } from './clientes.service';
+export type {
+  Compra,
+  DetalleCompra,
+  CreateCompraRequest,
+  DetalleCompraRequest,
+  ProductoSimple,
+  BodegaSimple,
+  UsuarioSimple
+} from './compras.service';
 export type { 
   Inventario, 
   CreateInventarioRequest, 
   AjustarInventarioRequest 
 } from './inventario.service';
+export type {
+  Proveedor,
+  CreateProveedorRequest,
+  UpdateProveedorRequest
+} from './proveedores.service';
 export type { 
   Producto, 
   CreateProductoRequest, 

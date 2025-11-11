@@ -58,6 +58,20 @@ export enum Permission {
   CLIENTES_ACTUALIZAR = 'CLIENTES_ACTUALIZAR',
   CLIENTES_ELIMINAR = 'CLIENTES_ELIMINAR',
   
+  // Permisos de Proveedores
+  PROVEEDORES_CREAR = 'PROVEEDORES_CREAR',
+  PROVEEDORES_LEER = 'PROVEEDORES_LEER',
+  PROVEEDORES_ACTUALIZAR = 'PROVEEDORES_ACTUALIZAR',
+  PROVEEDORES_ELIMINAR = 'PROVEEDORES_ELIMINAR',
+  
+  // Permisos de Compras
+  COMPRAS_CREAR = 'COMPRAS_CREAR',
+  COMPRAS_LEER = 'COMPRAS_LEER',
+  COMPRAS_ACTUALIZAR = 'COMPRAS_ACTUALIZAR',
+  COMPRAS_ELIMINAR = 'COMPRAS_ELIMINAR',
+  COMPRAS_RECIBIR = 'COMPRAS_RECIBIR',
+  COMPRAS_CANCELAR = 'COMPRAS_CANCELAR',
+  
   // Permisos de Reportes
   REPORTES_VENTAS = 'REPORTES_VENTAS',
   REPORTES_INVENTARIO = 'REPORTES_INVENTARIO',
@@ -121,6 +135,18 @@ export const PermissionDescriptions: Record<Permission, string> = {
   [Permission.CLIENTES_LEER]: 'Permite visualizar clientes',
   [Permission.CLIENTES_ACTUALIZAR]: 'Permite modificar clientes existentes',
   [Permission.CLIENTES_ELIMINAR]: 'Permite eliminar clientes',
+  
+  [Permission.PROVEEDORES_CREAR]: 'Permite crear nuevos proveedores',
+  [Permission.PROVEEDORES_LEER]: 'Permite visualizar proveedores',
+  [Permission.PROVEEDORES_ACTUALIZAR]: 'Permite modificar proveedores existentes',
+  [Permission.PROVEEDORES_ELIMINAR]: 'Permite eliminar proveedores',
+  
+  [Permission.COMPRAS_CREAR]: 'Permite crear nuevas órdenes de compra',
+  [Permission.COMPRAS_LEER]: 'Permite visualizar órdenes de compra',
+  [Permission.COMPRAS_ACTUALIZAR]: 'Permite modificar órdenes de compra',
+  [Permission.COMPRAS_ELIMINAR]: 'Permite eliminar órdenes de compra',
+  [Permission.COMPRAS_RECIBIR]: 'Permite marcar compras como recibidas e ingresar stock',
+  [Permission.COMPRAS_CANCELAR]: 'Permite cancelar órdenes de compra',
   
   [Permission.REPORTES_VENTAS]: 'Permite generar reportes de ventas',
   [Permission.REPORTES_INVENTARIO]: 'Permite generar reportes de inventario',
@@ -195,6 +221,20 @@ export const PermissionGroups = {
     Permission.CLIENTES_LEER,
     Permission.CLIENTES_ACTUALIZAR,
     Permission.CLIENTES_ELIMINAR,
+  ],
+  PROVEEDORES: [
+    Permission.PROVEEDORES_CREAR,
+    Permission.PROVEEDORES_LEER,
+    Permission.PROVEEDORES_ACTUALIZAR,
+    Permission.PROVEEDORES_ELIMINAR,
+  ],
+  COMPRAS: [
+    Permission.COMPRAS_CREAR,
+    Permission.COMPRAS_LEER,
+    Permission.COMPRAS_ACTUALIZAR,
+    Permission.COMPRAS_ELIMINAR,
+    Permission.COMPRAS_RECIBIR,
+    Permission.COMPRAS_CANCELAR,
   ],
   REPORTES: [
     Permission.REPORTES_VENTAS,

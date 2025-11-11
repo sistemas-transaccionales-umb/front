@@ -11,6 +11,8 @@ import {
   ArrowsRightLeftIcon,
   ShoppingCartIcon,
   DocumentTextIcon,
+  TruckIcon,
+  ShoppingBagIcon,
   XMarkIcon,
 } from '@heroicons/react/24/outline';
 import { useAuth } from '../../contexts/AuthContext';
@@ -80,6 +82,23 @@ const allNavigation: NavigationItem[] = [
         href: '/transferencias', 
         icon: ArrowsRightLeftIcon, 
         permissions: [Permission.TRANSFERENCIAS_LEER] 
+      },
+    ]
+  },
+  { 
+    name: 'Compras', 
+    items: [
+      { 
+        name: 'Proveedores', 
+        href: '/proveedores', 
+        icon: TruckIcon, 
+        permissions: [Permission.PROVEEDORES_LEER] 
+      },
+      { 
+        name: 'Órdenes de Compra', 
+        href: '/compras', 
+        icon: ShoppingBagIcon, 
+        permissions: [Permission.COMPRAS_LEER] 
       },
     ]
   },
